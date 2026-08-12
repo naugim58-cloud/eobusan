@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>어부산 | 오늘 부산 바다가 골라준 한 끼</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .fish-photo{height:74px;border-radius:12px;overflow:hidden;background:#e9f8fc}.fish-photo img,.result-photo{width:100%;height:100%;object-fit:cover}.result-photo{height:105px;border-radius:15px;margin-bottom:9px}.draw-card .result-photo{width:160px;margin:0 auto 7px}
+    .season-selector{display:flex;align-items:center;justify-content:space-between;margin:15px 0 0;padding:10px 13px;border:1px solid #cce7f0;border-radius:12px;color:#327294;font-size:12px}.season-selector select{width:90px;margin:0;padding:7px;border:0;background:#e8f8fc;font-weight:bold}.season-insight{margin:8px 0 0;color:#607e91;font-size:12px;line-height:1.6}.fish em{display:block;margin-top:7px;color:#16a882;font:10px sans-serif}.season-board{margin-top:30px;padding:17px 13px;background:#f5fbfd;border-radius:18px}.season-board>p{font:bold 9px sans-serif;letter-spacing:1px;color:#3a9fbb;margin:0 0 5px}.season-board h2{font-size:18px}.calendar-row{padding:11px 0;border-bottom:1px solid #dcecf1}.calendar-row:last-child{border:0}.calendar-row b{display:block;margin-bottom:6px;font-size:11px}.calendar-row span{display:grid;grid-template-columns:repeat(12,1fr);gap:3px}.calendar-row i{display:grid;place-items:center;height:17px;border-radius:4px;background:#e0e9ec;color:#91a3aa;font:8px sans-serif;font-style:normal}.calendar-row i.on{background:#83d6dd;color:#15546a}.calendar-row i.now{background:#ff7d61;color:white;font-weight:bold;box-shadow:0 2px 5px #ff7d6180}.empty{padding:25px;text-align:center;color:#7992a0;font-size:13px}.image-fallback:after{content:'🐟';display:grid;place-items:center;height:100%;font-size:36px}
+    .region-block{margin-top:18px}.region-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.region-head h3{margin:0;font:19px 'Jua';color:#176c9b}.region-head small{padding:4px 8px;background:#e7f5fb;border-radius:12px;color:#3982a5;font-size:10px}.region-fish-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.region-fish-grid .fish{min-width:0}.region-fish-grid .fish b{font-size:15px}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header><button class="logo" onclick="go('home')">🌊 <span>어부산<small>BUSAN SEA PICK</small></span></button><button class="seller-link" onclick="go('seller')">🎣 판매자 등록</button></header>
+  <main>
+    <section id="home" class="page active">
+      <p class="eyebrow">TODAY'S BUSAN CATCH</p><h1><span id="month-name">8월</span> 부산 바다에는<br><b><span id="total-count">72</span>마리</b>가 기다리고 있어요</h1>
+      <div class="season-selector"><span>🗓️ 어획 분석 월</span><select id="month-select" onchange="setMonth(this.value)"></select></div><p id="season-insight" class="season-insight"></p>
+      <div class="draw-hero"><div class="bubbles">○ · ○　·　○</div><span>🐟</span><p>오늘 부산 바다가<br>당신의 저녁을 골라드려요</p><button class="primary" onclick="go('draw')">🎣 오늘 뭐 잡혔나?</button></div>
+      <div class="section-title"><div><p>SEA RESCUE</p><h2>🚨 긴급 구조 요청</h2></div><button onclick="go('rescue')">전체보기 ›</button></div>
+      <article id="urgent-card" class="urgent-card"></article>
+      <div class="section-title"><div><p>FRESH FROM THE SEA</p><h2>오늘의 싱싱 수산물</h2></div></div>
+      <div id="fish-list" class="regional-fish-list"></div><section class="season-board"><p>MONTHLY CATCH ANALYSIS</p><h2>월별 어획 캘린더</h2><div id="season-calendar"></div></section>
+    </section>
+
+    <section id="draw" class="page draw-page"><p class="eyebrow">SEA PICK</p><h1>오늘 부산 바다가<br>당신의 저녁을 골라드립니다.</h1><div id="draw-card" class="draw-card"><div class="draw-wave">🌊</div><div class="mystery">?</div><p>버튼을 눌러 오늘의 수산물을 만나보세요</p></div><button class="primary large" onclick="drawFish()">🎣 오늘 뭐 잡혔나?</button><p class="hint">남은 수량이 많은 수산물일수록 만날 확률이 높아요.</p></section>
+
+    <section id="rescue" class="page"><p class="eyebrow">SEA RESCUE</p><h1>오늘 바다의<br><b>구조 요청</b></h1><p class="sub">내 구매가 부산 어민의 남는 수산물을 줄여요.</p><div id="rescue-list" class="rescue-list"></div></section>
+
+    <section id="map" class="page"><p class="eyebrow">BUSAN SEA MAP</p><h1>어디에서<br>왔을까요?</h1><p class="sub">내가 먹는 물고기가 부산 어디에서 왔는지 확인해요.</p><div class="busan-map"><div class="land">BUSAN</div><button class="pin gijang" onclick="filterArea('기장')">📍<span>기장</span></button><button class="pin songjeong" onclick="filterArea('송정')">📍<span>송정</span></button><button class="pin yeongdo" onclick="filterArea('영도')">📍<span>영도</span></button><button class="pin dadaepo" onclick="filterArea('다대포')">📍<span>다대포</span></button></div><div id="area-result" class="area-result">지도 위 지역을 눌러 오늘 잡힌 수산물을 확인하세요.</div></section>
+
+    <section id="my" class="page"><p class="eyebrow">MY SEA</p><h1>나의 부산 바다</h1><div class="profile"><span>🧑‍🚀</span><div><b>바다 구조대 Lv.<span id="level">1</span></b><p>오늘도 부산 바다를 도와주고 있어요!</p></div></div><div class="stats"><div><b id="rescued-count">0</b><span>구조한 수산물</span></div><div><b id="found-count">0</b><span>발견한 생물</span></div></div><h2>🐠 부산 바다 도감</h2><p class="sub">구매하면 새로운 바다 친구가 등록돼요.</p><div id="collection" class="collection"></div></section>
+
+    <section id="seller" class="page"><p class="eyebrow">FOR FISHERS</p><h1>오늘 잡은<br>수산물 등록</h1><p class="sub">등록하면 바로 소비자에게 오늘의 바다로 소개돼요.</p><form id="seller-form"><label>어종<input id="new-name" required placeholder="예: 전갱이"></label><label>지역<select id="new-area"><option>기장</option><option>영도</option><option>송정</option><option>다대포</option></select></label><label>어획 시간<input id="new-time" type="time" value="07:20"></label><label>가격 (원)<input id="new-price" type="number" value="15000"></label><label>수량 (마리)<input id="new-qty" type="number" value="15"></label><button class="primary" type="submit">오늘의 수산물 등록하기</button></form></section>
+  </main>
+  <nav><button data-page="home" class="active" onclick="go('home')">🏠<span>홈</span></button><button data-page="draw" onclick="go('draw')">🎣<span>바다뽑기</span></button><button data-page="map" onclick="go('map')">🗺️<span>바다지도</span></button><button data-page="my" onclick="go('my')">👤<span>MY</span></button></nav>
+</div>
+<div id="modal" class="modal hidden"><div class="modal-box"><button class="close" onclick="closeModal()">×</button><div id="modal-content"></div></div></div><div id="toast"></div>
+<script src="script.js"></script>
+</body></html>
